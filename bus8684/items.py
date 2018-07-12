@@ -18,7 +18,7 @@ class Bus8684Item(scrapy.Item):
     lines_url = scrapy.Field()
     bus_line_url = scrapy.Field()
     bus_stations = scrapy.Field()
-    line__name = scrapy.Field()
+    line_name = scrapy.Field()
     line_attribute = scrapy.Field()
     ticket_price = scrapy.Field()
     run_time = scrapy.Field()

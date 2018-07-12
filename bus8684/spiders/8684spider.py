@@ -76,7 +76,7 @@ class BusSpider(scrapy.Spider):
         item = response.meta['item_3']
         bus_stations = response.xpath('//div[@class="bus_line_site "]/div[1]//div/a/text()').extract()
         item['bus_stations'] = bus_stations
-        item['line__name'] = response.xpath('//div[@class="bus_i_t1"]/h1/text()').extract_first()
+        item['line_name'] = response.xpath('//div[@class="bus_i_t1"]/h1/text()').extract_first()
         item['line_attribute'] = response.xpath('//div[@class="bus_i_t1"]/a/text()').extract_first()
         run_time = response.xpath('//p[@class="bus_i_t4"]/text()').extract()[0]
         ticket_price = response.xpath('//p[@class="bus_i_t4"]/text()').extract()[1]
