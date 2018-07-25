@@ -6,7 +6,6 @@
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-from bus8684.bus8684 import get_proxys
 
 
 class Bus8684SpiderMiddleware(object):
