@@ -5,45 +5,33 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
 from bus8684.items import Bus8684Item
+from . import cityjson
 
 
 class BusSpider(scrapy.Spider):
     name = 'bus8684'
     allowed_domains = ['8684.cn']
-    start_urls = ['http://www.8684.cn/']
+
+    def __init__(self, crawl_city=['厦门']):
+        cityFilter = crawl_city
+        self.cityList = []
+        self.start_urls = []
+        self.city_index = 0
+        for province in cityjson:
+                for cityKey in cityjson[province]:
+                    city = cityjson[province][cityKey]
+                    if city in cityFilter:
+                        self.cityList.append({
+                            'city_url': 'http://' + cityKey + '.8684.cn',
+                            'city': city,
+                            'province': province
+                        })
+        for city in self.cityList:
+            self.start_urls.append(city['city_url'])
+        super(BusSpider, self).__init__()
 
     def parse(self, response):
-
-        options = Options()
-        options.add_argument("-headless")
-        browser = Chrome(chrome_options=options)
-
-        browser.get("http://www.8684.cn/")
-        elem = browser.find_element_by_css_selector("#busQueNav > div")
-        elem.click()
-
-        elem2 = browser.find_element_by_css_selector("#c_bt0")
-        elem2.click()
-
-        soup = BeautifulSoup(browser.page_source, 'lxml')
-        provinces = soup.select("#city0 > li")
-        browser.quit()
-
-        item_1 = []
-        for province in provinces:
-            cities = province.select("> i > a")
-            for city in cities:
-                item = Bus8684Item()
-                item["province"] = province.select("> cite")[0].get_text()
-                item["city"] = city.get_text()
-                city_url = city.get("href")
-                item["city_url"] = city_url
-                item_1.append(item)
-        for item in item_1:
-            yield scrapy.Request(url=item['city_url'], callback=self.line_url_parse, meta={'item_1': item})
-
-    def line_url_parse(self, response):
-        item_1 = response.meta['item_1']
+        item_1 = self.cityList[self.city_index]
         items = []
         lines_url = response.xpath('//div[@class="bus_kt_r1" or @class="bus_kt_r2"]//a/@href').extract()
         for line_url in lines_url:
@@ -55,7 +43,7 @@ class BusSpider(scrapy.Spider):
             items.append(item)
         for item in items:
             time.sleep(random.uniform(1, 2))
-            url = item['city_url'] + item['lines_url'].split('/')[1]
+            url = item['city_url'] + item['lines_url']
             yield scrapy.Request(url=url, callback=self.line_parse, meta={'item_2': item})
 
 
@@ -72,7 +60,7 @@ class BusSpider(scrapy.Spider):
             item['city_url'] = item_2['city_url']
             items.append(item)
         for item in items:
-            url = item['city_url'] + item['bus_line_url'].split('/')[1]
+            url = item['city_url'] + item['bus_line_url']
             yield scrapy.Request(url=url , callback=self.bus_stations_parse, meta={'item_3': item})
 
     def bus_stations_parse(self, response):
@@ -101,4 +89,8 @@ class BusSpider(scrapy.Spider):
             item['update_time'] = '暂无信息'
         else:
             item['update_time'] = update_time.split('：')[-1]
+        if self.city_index < len(self.cityList):
+            self.city_index += 1
+            city_url = self.cityList(self.city_index)['city_url']
+            yield scrapy.Request(url=city_url, callback=self.parse)
         yield item

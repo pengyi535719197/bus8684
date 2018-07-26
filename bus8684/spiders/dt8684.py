@@ -2,7 +2,9 @@
 import scrapy
 from bus8684.items import Dt8684Item
 
+
 class Dt8684Spider(scrapy.Spider):
+
     name = "dt8684"
     allowed_domains = ["8684.cn"]
     start_urls = ['http://dt.8684.cn/']
