@@ -24,3 +24,14 @@ class Bus8684Item(scrapy.Item):
     run_time = scrapy.Field()
     company = scrapy.Field()
     update_time = scrapy.Field()
+
+class Dt8684Item(scrapy.Item):
+    city = scrapy.Field()
+    city_url = scrapy.Field()
+    line_name = scrapy.Field()
+    line_url = scrapy.Field()
+    stations = scrapy.Field()
+    start_time1 = scrapy.Field()
+    start_time2 = scrapy.Field()
+    end_time1 = scrapy.Field()
+    end_time2 = scrapy.Field()

@@ -1,7 +1,7 @@
 import scrapy
 import time
 import random
-from selenium.webdriver import Firefox
+from selenium.webdriver import Chrome
 from selenium.webdriver.firefox.options import Options
 from bs4 import BeautifulSoup
 from bus8684.items import Bus8684Item
@@ -16,11 +16,14 @@ class BusSpider(scrapy.Spider):
 
         options = Options()
         options.add_argument("-headless")
-        browser = Firefox(executable_path="D:\\firefox\\geckodriver.exe", firefox_options=options)
+        browser = Chrome(chrome_options=options)
 
         browser.get("http://www.8684.cn/")
-        elem = browser.find_element_by_css_selector(".addrChangeBus")
+        elem = browser.find_element_by_css_selector("#busQueNav > div")
         elem.click()
+
+        elem2 = browser.find_element_by_css_selector("#c_bt0")
+        elem2.click()
 
         soup = BeautifulSoup(browser.page_source, 'lxml')
         provinces = soup.select("#city0 > li")

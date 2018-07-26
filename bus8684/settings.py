@@ -67,7 +67,9 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'bus8684.pipelines.Bus8684Pipeline': 300,
+   # 'bus8684.pipelines.Bus8684Pipeline': 300,
+   'bus8684.pipelines.JsonPipelines': 300,
+
 }
 
 # FEED_EXPORT_ENCODING='utf-8'

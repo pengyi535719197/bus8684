@@ -1,6 +1,6 @@
 from scrapy.exceptions import IgnoreRequest
-from scrapy.http import HtmlResponse, Response
-import bus8684.middlewares.downloader as downloader
+from scrapy.http import HtmlResponse
+import bus8684.bus8684.middlewares.downloader as downloader
 
 
 class CustomMiddlewares(object):
